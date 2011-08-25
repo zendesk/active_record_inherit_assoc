@@ -12,7 +12,7 @@ Jeweler::Tasks.new do |s|
   s.summary     = "When connecting to databases on one host, use just one connection"
   s.description = ""
 
-  s.add_runtime_dependency("active_record", "~> 2.3.5")
+  s.add_runtime_dependency("activerecord", "~> 2.3.5")
 
   if RUBY_VERSION < "1.9"
     s.add_development_dependency("ruby-debug")

@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{active_record_inherit_assoc}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Osheroff"]
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<activerecord-jdbcmysql-adapter>, ["~> 1.0.3"])
       s.add_development_dependency(%q<ruby-debug>, [">= 0"])
       s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
-      s.add_runtime_dependency(%q<active_record>, ["~> 2.3.5"])
+      s.add_runtime_dependency(%q<activerecord>, ["~> 2.3.5"])
       s.add_development_dependency(%q<ruby-debug>, [">= 0"])
     else
       s.add_dependency(%q<activerecord>, ["~> 2.3.5"])
@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<activerecord-jdbcmysql-adapter>, ["~> 1.0.3"])
       s.add_dependency(%q<ruby-debug>, [">= 0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
-      s.add_dependency(%q<active_record>, ["~> 2.3.5"])
+      s.add_dependency(%q<activerecord>, ["~> 2.3.5"])
       s.add_dependency(%q<ruby-debug>, [">= 0"])
     end
   else
@@ -67,7 +67,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<activerecord-jdbcmysql-adapter>, ["~> 1.0.3"])
     s.add_dependency(%q<ruby-debug>, [">= 0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])
-    s.add_dependency(%q<active_record>, ["~> 2.3.5"])
+    s.add_dependency(%q<activerecord>, ["~> 2.3.5"])
     s.add_dependency(%q<ruby-debug>, [">= 0"])
   end
 end
