@@ -1,0 +1,6 @@
+pkg/*
+.bundle
+*.log
+localgems
+test/db
+test/test.log
