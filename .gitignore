@@ -4,3 +4,4 @@ pkg/*
 localgems
 test/db
 test/test.log
+.*.swp
