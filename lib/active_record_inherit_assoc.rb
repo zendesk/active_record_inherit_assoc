@@ -13,6 +13,9 @@ module ActiveRecord
   module Associations
     class AssociationProxy
       def conditions_with_value_inheritance
+        # ActiveHash doesn't respond.
+        return conditions_without_value_inheritance unless @reflection.klass.respond_to?(:merge_conditions)
+
         @reflection.klass.merge_conditions(attribute_inheritance_hash, conditions_without_value_inheritance)
       end
 
