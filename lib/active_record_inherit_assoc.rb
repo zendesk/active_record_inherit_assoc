@@ -63,7 +63,7 @@ module ActiveRecord
         replace_without_value_inheritance(record)
 
         if attr = proxy_reflection.options[:inherit]
-          proxy_owner.send("#{attr}=", proxy_target.send(attr))
+          proxy_owner[attr] = proxy_target.send(attr)
         end
       end
 
