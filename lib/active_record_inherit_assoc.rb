@@ -57,5 +57,17 @@ module ActiveRecord
       end
       [:create, :create!, :build].each { |sym| alias_method_chain sym, :value_inheritance }
     end
+
+    class BelongsToAssociation < AssociationProxy
+      def replace_with_value_inheritance(record)
+        replace_without_value_inheritance(record)
+
+        if attr = proxy_reflection.options[:inherit]
+          proxy_owner.send("#{attr}=", proxy_target.send(attr))
+        end
+      end
+
+      alias_method_chain :replace, :value_inheritance
+    end
   end
 end
