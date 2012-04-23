@@ -14,4 +14,16 @@ class TestBelongsToAssociation < ActiveSupport::TestCase
 
     assert_equal 42, @other.account_id
   end
+
+  def test_does_not_inherit_when_parent_not_present
+    @other = Other.create!
+    assert_nil @other.account_id
+  end
+
+  def test_overwrites_value_on_child
+    @main = Main.create!(:account_id => 42)
+    @other = Other.create!(:main => @main, :account_id => 1337)
+
+    assert_equal 42, @other.account_id
+  end
 end
