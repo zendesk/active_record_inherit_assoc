@@ -8,6 +8,25 @@ ActiveRecord::Base.valid_keys_for_has_many_association << :inherit
 ActiveRecord::Base.valid_keys_for_has_one_association << :inherit
 ActiveRecord::Base.valid_keys_for_belongs_to_association << :inherit
 
+class ActiveRecord::Base
+  # Makes the model inherit the specified attribute from a named association.
+  #
+  # Examples
+  #
+  #   class Post < ActiveRecord::Base
+  #     belongs_to :category
+  #     inherits_from :category, :attr => :account
+  #   end
+  #
+  def self.inherits_from(parent_name, options = {})
+    attr = options.fetch(:attr)
+
+    before_validation do |model|
+      parent = model.send(parent_name)
+      model[attr] = parent[attr] if parent.present?
+    end
+  end
+end
 
 module ActiveRecord
   module Associations
@@ -56,18 +75,6 @@ module ActiveRecord
         build_without_value_inheritance(attribute_inheritance_hash.merge(attrs), replace_existing)
       end
       [:create, :create!, :build].each { |sym| alias_method_chain sym, :value_inheritance }
-    end
-
-    class BelongsToAssociation < AssociationProxy
-      def replace_with_value_inheritance(record)
-        replace_without_value_inheritance(record)
-
-        if attr = proxy_reflection.options[:inherit]
-          proxy_owner[attr] = proxy_target.send(attr)
-        end
-      end
-
-      alias_method_chain :replace, :value_inheritance
     end
   end
 end

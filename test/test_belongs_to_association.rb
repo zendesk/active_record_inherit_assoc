@@ -5,7 +5,8 @@ class TestBelongsToAssociation < ActiveSupport::TestCase
   end
 
   class Other < ActiveRecord::Base
-    belongs_to :main, :inherit => :account_id
+    belongs_to :main
+    inherits_from :main, :attr => :account_id
   end
 
   def test_value_is_inherited_from_parent
@@ -23,6 +24,16 @@ class TestBelongsToAssociation < ActiveSupport::TestCase
   def test_overwrites_value_on_child
     @main = Main.create!(:account_id => 42)
     @other = Other.create!(:main => @main, :account_id => 1337)
+
+    assert_equal 42, @other.account_id
+  end
+
+  def test_allows_setting_the_value_after_instantiation
+    @main = Main.create!
+    @other = Other.new(:main => @main, :account_id => 1337)
+
+    @main.account_id = 42
+    @other.save
 
     assert_equal 42, @other.account_id
   end
