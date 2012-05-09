@@ -11,6 +11,11 @@ ActiveRecord::Base.valid_keys_for_belongs_to_association << :inherit
 class ActiveRecord::Base
   # Makes the model inherit the specified attribute from a named association.
   #
+  # parent_name - The Symbol name of the parent association.
+  # options     - The Hash options to use:
+  #               :attr - A Symbol or an Array of Symbol names of the attributes
+  #                       that should be inherited from the parent association.
+  #
   # Examples
   #
   #   class Post < ActiveRecord::Base
@@ -19,11 +24,14 @@ class ActiveRecord::Base
   #   end
   #
   def self.inherits_from(parent_name, options = {})
-    attr = options.fetch(:attr)
+    attrs = Array.wrap(options.fetch(:attr))
 
     before_validation do |model|
       parent = model.send(parent_name)
-      model[attr] = parent[attr] if parent.present?
+
+      attrs.each do |attr|
+        model[attr] = parent[attr] if parent.present?
+      end
     end
   end
 end
