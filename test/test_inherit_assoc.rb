@@ -1,24 +1,24 @@
 require File.dirname(__FILE__) + '/helper.rb'
 
-class Main < ActiveRecord::Base
-  has_many :others, :inherit => :account_id
-  has_one :third, :inherit => :account_id
-  has_many :fourths, :inherit => [:account_id, :blah_id]
-end
-
-class Other < ActiveRecord::Base
-  belongs_to :main
-end
-
-class Third < ActiveRecord::Base
-  belongs_to :main
-end
-
-class Fourth < ActiveRecord::Base
-  belongs_to :main
-end
-
 class TestInheritAssoc < ActiveSupport::TestCase
+  class Main < ActiveRecord::Base
+    has_many :others, :inherit => :account_id
+    has_one :third, :inherit => :account_id
+    has_many :fourths, :inherit => [:account_id, :blah_id]
+  end
+
+  class Other < ActiveRecord::Base
+    belongs_to :main
+  end
+
+  class Third < ActiveRecord::Base
+    belongs_to :main
+  end
+
+  class Fourth < ActiveRecord::Base
+    belongs_to :main
+  end
+
   context "Main, with some others" do
     setup do
       @main = Main.create! :account_id => 1
