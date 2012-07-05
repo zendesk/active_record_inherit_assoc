@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source :rubygems
 
 gem 'activerecord', '~> 2.3.5'
 
@@ -13,4 +13,5 @@ group :development do
   gem 'jeweler'
   gem 'ruby-debug',   :platforms => :ruby_18
   gem 'debugger', :platforms => :ruby_19
+  gem 'test-unit', '>=2.5.1'
 end
