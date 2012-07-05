@@ -19,7 +19,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
     belongs_to :main
   end
 
-  context "Main, with some others" do
+  context "Main, with some others, scoped by account_id" do
     setup do
       @main = Main.create! :account_id => 1
       Other.create! :main_id => @main.id, :account_id => 1
