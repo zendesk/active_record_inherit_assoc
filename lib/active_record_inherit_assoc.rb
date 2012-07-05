@@ -38,23 +38,38 @@ end
 
 module ActiveRecord
   module Associations
-    class AssociationProxy
+    AssociationProxy.class_eval do
       def conditions_with_value_inheritance
-        # ActiveHash doesn't respond.
-        return conditions_without_value_inheritance unless @reflection.klass.respond_to?(:merge_conditions)
-
-        @reflection.klass.merge_conditions(attribute_inheritance_hash, conditions_without_value_inheritance)
+        return conditions_without_value_inheritance unless @reflection.klass.respond_to?(:sanitize_sql) # ActiveHash TODO test this!
+        copied_merge_conditions(conditions_without_value_inheritance, attribute_inheritance_hash)
       end
 
       alias_method_chain :conditions, :value_inheritance
+
       private
+
+      # copied from activerecord 2.3 to fix compatability with 3.0
+      # Merges conditions so that the result is a valid +condition+
+      def copied_merge_conditions(*conditions)
+        segments = []
+
+        conditions.each do |condition|
+          unless condition.blank?
+            sql = sanitize_sql(condition)
+            segments << sql unless sql.blank?
+          end
+        end
+
+        "(#{segments.join(') AND (')})" unless segments.empty?
+      end
+
       def attribute_inheritance_hash
         return {} unless @reflection.options[:inherit]
         Array(@reflection.options[:inherit]).inject({}) { |hash, obj| hash[obj] = @owner.send(obj) ; hash }
       end
     end
 
-    class AssociationCollection < AssociationProxy
+    AssociationCollection.class_eval do
       # this is *maybe* not the correct place to patch in, but it covers all the cases
       # without having to patch build, create, create!, etc
       def add_record_to_target_with_callbacks_with_value_inheritance(record, &block)
@@ -67,7 +82,7 @@ module ActiveRecord
       alias_method_chain :add_record_to_target_with_callbacks, :value_inheritance
     end
 
-    class HasOneAssociation < BelongsToAssociation
+    HasOneAssociation.class_eval do
       def create_with_value_inheritance(attrs = {}, replace_existing = true)
         attrs ||= {}
         create_without_value_inheritance(attribute_inheritance_hash.merge(attrs), replace_existing)

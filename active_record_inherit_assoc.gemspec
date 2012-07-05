@@ -8,6 +8,6 @@ Gem::Specification.new name, "0.0.5" do |s|
   s.files = `git ls-files`.split("\n")
   s.license = "MIT"
   s.homepage = "http://github.com/zendesk/#{name}"
-  s.add_runtime_dependency "activerecord", "~> 2.3.5"
+  s.add_runtime_dependency "activerecord"
 end
 

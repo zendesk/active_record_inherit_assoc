@@ -5,6 +5,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
     has_many :others, :inherit => :account_id
     has_one :third, :inherit => :account_id
     has_many :fourths, :inherit => [:account_id, :blah_id]
+    has_many :conditional_others, :inherit => :account_id, :conditions => {:val => "foo"}, :class_name => "Other"
   end
 
   class Other < ActiveRecord::Base
@@ -37,6 +38,10 @@ class TestInheritAssoc < ActiveSupport::TestCase
 
     should "merge conditions on find" do
       assert_equal 1, @main.others.all(:conditions => "val = 'foo'").size
+    end
+
+    should "merge conditions" do
+      assert_equal 1, @main.conditional_others.size
     end
   end
 
