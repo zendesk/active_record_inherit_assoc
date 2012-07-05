@@ -1,18 +1,14 @@
-require 'rubygems'
 require 'bundler'
 Bundler.setup
-Bundler.require(:default, :development)
+Bundler.require
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'active_record_inherit_assoc'
-require 'logger'
-require 'shoulda'
-require 'ruby-debug'
-RAILS_ENV = "test"
-
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/test.log")
-database_config = YAML.load_file(File.join(File.dirname(__FILE__), 'database.yml'))
-ActiveRecord::Base.establish_connection(database_config['test'])
-require 'schema'
 require 'active_support/test_case'
+
+ActiveRecord::Base.establish_connection(
+  :adapter => "sqlite3",
+  :database => ":memory:"
+)
+require File.expand_path("../schema", __FILE__)
+
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+require 'active_record_inherit_assoc'

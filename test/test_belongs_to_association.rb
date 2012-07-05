@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper.rb'
+require File.expand_path '../helper', __FILE__
 
 class TestBelongsToAssociation < ActiveSupport::TestCase
   class Main < ActiveRecord::Base
