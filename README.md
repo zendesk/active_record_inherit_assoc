@@ -18,7 +18,6 @@ Makes the model inherit the specified attribute from a named association.
       inherits_from :category, :attr => :account
     end
 
-
 ## Copyright
 
 Copyright (c) 2011 Zendesk. See MIT-LICENSE for details.
