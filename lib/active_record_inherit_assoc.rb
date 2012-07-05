@@ -41,7 +41,7 @@ module ActiveRecord
     AssociationProxy.class_eval do
       def conditions_with_value_inheritance
         return conditions_without_value_inheritance unless @reflection.klass.respond_to?(:sanitize_sql) # ActiveHash TODO test this!
-        copied_merge_conditions(conditions_without_value_inheritance, attribute_inheritance_hash)
+        copied_merge_conditions(attribute_inheritance_hash, conditions_without_value_inheritance)
       end
 
       alias_method_chain :conditions, :value_inheritance
