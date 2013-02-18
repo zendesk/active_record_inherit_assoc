@@ -1,7 +1,7 @@
 PATH
   remote: /Users/mgrosser/code/tools/active_record_inherit_assoc
   specs:
-    active_record_inherit_assoc (0.0.5)
+    active_record_inherit_assoc (0.0.6)
       activerecord
 
 GEM
