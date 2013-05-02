@@ -1,7 +1,7 @@
 PATH
   remote: /Users/staugaard/code/active_record_inherit_assoc
   specs:
-    active_record_inherit_assoc (1.0.0)
+    active_record_inherit_assoc (1.1.0)
       activerecord
 
 GEM
