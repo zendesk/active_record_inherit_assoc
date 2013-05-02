@@ -6,12 +6,13 @@ gem "appraisal"
 gem "rake"
 gem "rails"
 gem "bundler"
+gem "bump"
 gem "sqlite3"
 gem "shoulda"
 gem "jeweler"
 gem "ruby-debug", :platforms=>:ruby_18
 gem "debugger", :platforms=>:ruby_19
 gem "test-unit", ">=2.5.1"
-gem "activerecord", "3.0.15", :require=>"active_record"
+gem "activerecord", "~> 3.0.15", :require=>"active_record"
 
 gemspec :path=>"../"
