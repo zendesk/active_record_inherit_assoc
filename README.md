@@ -2,6 +2,8 @@
 
 Makes the model inherit the specified attribute from a named association.
 
+Supports ActiveRecord 2.3, 3.0, 3.1, and 3.2.
+
 ## Install
 
     gem install active_record_inherit_assoc
