@@ -1,11 +1,11 @@
 PATH
-  remote: /Users/staugaard/code/active_record_inherit_assoc
+  remote: ../
   specs:
     active_record_inherit_assoc (1.1.0)
       activerecord
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actionmailer (3.2.13)
       actionpack (= 3.2.13)
@@ -39,6 +39,9 @@ GEM
       mocha (~> 0.13.2)
     builder (3.0.4)
     bump (0.4.1)
+    byebug (2.6.0)
+      columnize (~> 0.3)
+      debugger-linecache (~> 1.2)
     columnize (0.3.6)
     debugger (1.5.0)
       columnize (>= 0.3.1)
@@ -65,6 +68,7 @@ GEM
       treetop (~> 1.4.8)
     metaclass (0.0.1)
     mime-types (1.23)
+    minitest (5.3.5)
     mocha (0.13.3)
       metaclass (~> 0.0.1)
     multi_json (1.7.2)
@@ -113,12 +117,15 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_inherit_assoc!
-  activerecord (~> 3.2.0)
+  activerecord
+  activesupport
   appraisal
   bump
   bundler
+  byebug
   debugger
   jeweler
+  minitest
   rails
   rake
   ruby-debug

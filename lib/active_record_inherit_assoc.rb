@@ -1,11 +1,14 @@
 require 'active_record'
 
 if ActiveRecord::VERSION::STRING < "3.1"
-  require 'active_record_inherit_assoc/ar_23_and_30'
-else
+  raise 'this rails version is unsupported!'
+elsif ActiveRecord::VERSION::STRING < "4.0"
   require 'active_record_inherit_assoc/ar_31_and_32'
+else
+  require 'active_record_inherit_assoc/ar_4'
 end
 
+require 'active_record_inherit_assoc/common'
 class ActiveRecord::Base
   # Makes the model inherit the specified attribute from a named association.
   #

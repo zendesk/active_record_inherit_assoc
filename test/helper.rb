@@ -2,7 +2,9 @@ require 'bundler'
 Bundler.setup
 Bundler.require
 
+require 'minitest/autorun'
 require 'active_support/test_case'
+
 
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
