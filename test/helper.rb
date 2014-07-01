@@ -1,20 +1,13 @@
-require 'bundler'
-Bundler.setup
-Bundler.require
+require 'bundler/setup'
+require 'minitest/autorun'
+require 'minitest/rg'
 
-if ActiveRecord::VERSION::MAJOR == 4
-  # voodoo!
-  require 'minitest/autorun'
-end
-
-require 'active_support/test_case'
-
-
+require 'active_record'
+ActiveRecord::Schema.verbose = false
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
   :database => ":memory:"
 )
-require File.expand_path("../schema", __FILE__)
+require_relative "schema"
 
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require 'active_record_inherit_assoc'
