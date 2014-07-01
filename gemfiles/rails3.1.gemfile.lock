@@ -118,9 +118,9 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_inherit_assoc!
-  activerecord
+  activerecord (~> 3.1.0)
   activesupport
-  appraisal
+  appraisal (< 1)
   bump
   bundler
   byebug

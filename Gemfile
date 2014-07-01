@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'minitest'
-gem 'appraisal'
+gem 'appraisal', '< 1'
 gem 'rake'
 gem 'rails'
 gem 'bundler'
