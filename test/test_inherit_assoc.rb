@@ -22,43 +22,43 @@ class TestInheritAssoc < ActiveSupport::TestCase
     belongs_to :main
   end
 
-  context "Main, with some others, scoped by account_id" do
-    setup do
+  describe "Main, with some others, scoped by account_id" do
+    before do
       @main = Main.create! :account_id => 1
       Other.create! :main_id => @main.id, :account_id => 1
       Other.create! :main_id => @main.id, :account_id => 2
       Other.create! :main_id => @main.id, :account_id => 1, :val => "foo"
     end
 
-    should "set conditions on simple access" do
+    it "set conditions on simple access" do
       assert_equal 2, @main.others.size
     end
 
     if ActiveRecord::VERSION::MAJOR < 4
-      should "set conditions on find" do
+      it "set conditions on find" do
         assert_equal 2, @main.others.find(:all).size
       end
 
-      should "merge conditions on find" do
+      it "merge conditions on find" do
         assert_equal 1, @main.others.all(:conditions => "val = 'foo'").size
       end
 
-      should "merge conditions" do
+      it "merge conditions" do
         assert_equal 1, @main.conditional_others.size
       end
     else
-      should "set conditions on find" do
+      it "set conditions on find" do
         assert_equal 2, @main.others.all.size
       end
 
-      should "merge conditions on find" do
+      it "merge conditions on find" do
         assert_equal 1, @main.others.all.where("val = 'foo'").size
       end
 
-      should_eventually "merge conditions" do
+      it "merge conditions" do
+        skip
         assert_equal 1, @main.conditional_others.size
       end
-
     end
   end
 
