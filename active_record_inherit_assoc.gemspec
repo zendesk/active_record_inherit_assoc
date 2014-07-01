@@ -8,6 +8,6 @@ Gem::Specification.new name, "1.1.0" do |s|
   s.files = `git ls-files`.split("\n")
   s.license = "Apache License Version 2.0"
   s.homepage = "http://github.com/zendesk/#{name}"
-  s.add_runtime_dependency "activerecord"
+  s.add_runtime_dependency "activerecord", ">=3.2.0", "< 5"
 end
 
