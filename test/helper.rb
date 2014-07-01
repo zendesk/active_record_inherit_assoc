@@ -2,7 +2,11 @@ require 'bundler'
 Bundler.setup
 Bundler.require
 
-require 'minitest/autorun'
+if ActiveRecord::VERSION::MAJOR == 4
+  # voodoo!
+  require 'minitest/autorun'
+end
+
 require 'active_support/test_case'
 
 
