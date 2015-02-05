@@ -2,7 +2,7 @@ PATH
   remote: ../
   specs:
     active_record_inherit_assoc (2.0.0)
-      activerecord (>= 3.2.0, < 5)
+      activerecord (>= 3.2.0, < 4.3)
 
 GEM
   remote: https://rubygems.org/
@@ -108,4 +108,4 @@ DEPENDENCIES
   rails
   rake
   sqlite3
-  wwtd (>= 0.5.3)
+  wwtd
