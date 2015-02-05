@@ -2,7 +2,7 @@
 
 Makes the model inherit the specified attribute from a named association.
 
-Supports ActiveRecord 2.3, 3.0, 3.1, and 3.2.
+Supports ActiveRecord 3.2, 4.0, and 4.1
 
 ## Install
 
@@ -22,7 +22,7 @@ Supports ActiveRecord 2.3, 3.0, 3.1, and 3.2.
 
 ## Copyright and license
 
-Copyright 2013 Zendesk
+Copyright 2015 Zendesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
