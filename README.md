@@ -2,7 +2,7 @@
 
 Makes the model inherit the specified attribute from a named association.
 
-Supports ActiveRecord 3.2, 4.0, and 4.1
+Supports ActiveRecord 3.2, 4.0, 4.1 and 4.2
 
 ## Install
 

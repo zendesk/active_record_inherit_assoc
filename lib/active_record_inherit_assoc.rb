@@ -8,16 +8,14 @@ else
   ActiveRecord::Associations::Builder::Association.valid_options << :inherit
 end
 
-ActiveRecord::Associations::Association.class_eval do
-  def association_scope_with_value_inheritance
+module ActiveRecordInheritAssocPrepend
+  def target_scope
     if inherited_attributes = attribute_inheritance_hash
-      association_scope_without_value_inheritance.where(inherited_attributes)
+      super.where(inherited_attributes)
     else
-      association_scope_without_value_inheritance
+      super
     end
   end
-
-  alias_method_chain :association_scope, :value_inheritance
 
   private
 
@@ -25,6 +23,10 @@ ActiveRecord::Associations::Association.class_eval do
     return nil unless reflection.options[:inherit]
     Array(reflection.options[:inherit]).inject({}) { |hash, obj| hash[obj] = owner.send(obj) ; hash }
   end
+end
+
+ActiveRecord::Associations::Association.class_eval do
+  prepend ActiveRecordInheritAssocPrepend
 end
 
 class ActiveRecord::Base
