@@ -1,6 +1,6 @@
 name = "active_record_inherit_assoc"
 
-Gem::Specification.new name, "2.1.0" do |s|
+Gem::Specification.new name, "2.2.0" do |s|
   s.summary = "Attribute inheritance for AR associations"
   s.authors = ["Ben Osheroff"]
   s.email = ["ben@gimbo.net"]
