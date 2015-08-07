@@ -8,7 +8,7 @@ Gem::Specification.new name, "2.1.0" do |s|
   s.license = "Apache License Version 2.0"
   s.homepage = "https://github.com/zendesk/#{name}"
 
-  s.add_runtime_dependency "activerecord", ">= 3.2.0", "< 4.2"
+  s.add_runtime_dependency "activerecord", ">= 3.2.0", "< 5.0"
 
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'minitest-rg'
@@ -17,4 +17,5 @@ Gem::Specification.new name, "2.1.0" do |s|
   s.add_development_dependency 'bump'
   s.add_development_dependency 'wwtd'
   s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'byebug'
 end

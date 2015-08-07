@@ -4,3 +4,4 @@ pkg/*
 localgems
 .*.swp
 /Gemfile.lock
+gemfiles/*.gemfile.lock

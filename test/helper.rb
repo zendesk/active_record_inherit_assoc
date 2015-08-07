@@ -10,4 +10,6 @@ ActiveRecord::Base.establish_connection(
 )
 require_relative "schema"
 
+ActiveSupport.test_order = :random if ActiveSupport.respond_to?(:test_order=)
+
 require 'active_record_inherit_assoc'

@@ -1,4 +1,4 @@
-require File.expand_path '../helper', __FILE__
+require_relative 'helper'
 
 class TestInheritAssoc < ActiveSupport::TestCase
   class Main < ActiveRecord::Base
@@ -66,6 +66,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
     main = Main.create! :account_id => 1
     third_1 = Third.create! :main_id => main.id, :account_id => 2
     third_2 = Third.create! :main_id => main.id, :account_id => 1
+
     assert_equal third_2, main.third
   end
 
