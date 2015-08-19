@@ -29,6 +29,50 @@ ActiveRecord::Associations::Association.class_eval do
   prepend ActiveRecordInheritAssocPrepend
 end
 
+module ActiveRecordInheritPreloadSingleAssocPrepend
+  if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
+    def preload(preloader)
+      associated_records_by_owner(preloader).each do |owner, associated_records|
+        if reflection.options[:inherit]
+          record = associated_records.find do |record|
+            Array(reflection.options[:inherit]).all? do |obj|
+              record.send(obj) == owner.send(obj)
+            end
+          end
+        else
+          record = associated_records.first
+        end
+
+        association = owner.association(reflection.name)
+        association.target = record
+        association.set_inverse_instance(record) if record
+      end
+    end
+  else
+    def preload
+      associated_records_by_owner.each do |owner, associated_records|
+        if reflection.options[:inherit]
+          record = associated_records.find do |record|
+            Array(reflection.options[:inherit]).all? do |obj|
+              record.send(obj) == owner.send(obj)
+            end
+          end
+        else
+          record = associated_records.first
+        end
+
+        association = owner.association(reflection.name)
+        association.target = record
+        association.set_inverse_instance(record) if record
+      end
+    end
+  end
+end
+
+ActiveRecord::Associations::Preloader::SingularAssociation.class_eval do
+  prepend ActiveRecordInheritPreloadSingleAssocPrepend
+end
+
 class ActiveRecord::Base
   # Makes the model inherit the specified attribute from a named association.
   #
