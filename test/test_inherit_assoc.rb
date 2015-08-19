@@ -96,6 +96,32 @@ class TestInheritAssoc < ActiveSupport::TestCase
     assert_equal third_4, mains.last.third
   end
 
+  def test_has_many_should_set_conditions_on_includes
+    main = Main.create! :account_id => 1, :blah_id => 10
+
+    fourth_1 = Fourth.create! :main_id => main.id, :account_id => 2, :blah_id => 10
+    fourth_2 = Fourth.create! :main_id => main.id, :account_id => 1, :blah_id => 10
+
+    mains = Main.where(id: main.id).includes(:fourths)
+
+    assert_equal [fourth_2], mains.first.fourths
+  end
+
+  def test_has_many_should_set_conditions_on_includes_with_multiple_owners
+    main_1 = Main.create! :account_id => 1, :blah_id => 10
+    main_2 = Main.create! :account_id => 1, :blah_id => 20
+
+    fourth_1 = Fourth.create! :main_id => main_1.id, :account_id => 2, :blah_id => 10
+    fourth_2 = Fourth.create! :main_id => main_1.id, :account_id => 1, :blah_id => 10
+    fourth_3 = Fourth.create! :main_id => main_2.id, :account_id => 2, :blah_id => 20
+    fourth_4 = Fourth.create! :main_id => main_2.id, :account_id => 1, :blah_id => 20
+
+    mains = Main.where(id: [main_1.id, main_2.id]).includes(:fourths)
+
+    assert_equal [fourth_2], mains.first.fourths
+    assert_equal [fourth_4], mains.last.fourths
+  end
+
   def test_has_many_should_set_conditions_for_multiple_inherits
     main = Main.create! :account_id => 1, :blah_id => 10
     # these two should match
