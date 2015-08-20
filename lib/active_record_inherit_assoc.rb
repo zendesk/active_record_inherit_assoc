@@ -21,7 +21,7 @@ module ActiveRecordInheritAssocPrepend
 
   def attribute_inheritance_hash
     return nil unless reflection.options[:inherit]
-    Array(reflection.options[:inherit]).inject({}) { |hash, obj| hash[obj] = owner.send(obj) ; hash }
+    Array(reflection.options[:inherit]).inject({}) { |hash, association| hash[association] = owner.send(association) ; hash }
   end
 end
 
@@ -30,17 +30,17 @@ ActiveRecord::Associations::Association.send(:prepend, ActiveRecordInheritAssocP
 module ActiveRecordInheritPreloadAssocPrepend
   def associated_records_by_owner(*args)
     super.tap do |result|
-      next unless reflection.options[:inherit]
+      next unless inherit = reflection.options[:inherit]
       result.each do |owner, associated_records|
-        filter_associated_records_with_inherit!(owner, associated_records)
+        filter_associated_records_with_inherit!(owner, associated_records, inherit)
       end
     end
   end
 
-  def filter_associated_records_with_inherit!(owner, associated_records)
+  def filter_associated_records_with_inherit!(owner, associated_records, inherit)
     associated_records.select! do |record|
-      Array(reflection.options[:inherit]).all? do |method_name|
-        record.send(method_name) == owner.send(method_name)
+      Array(inherit).all? do |association|
+        record.send(association) == owner.send(association)
       end
     end
   end
