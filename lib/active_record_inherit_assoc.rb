@@ -29,90 +29,40 @@ ActiveRecord::Associations::Association.class_eval do
   prepend ActiveRecordInheritAssocPrepend
 end
 
-module ActiveRecordInheritPreloadSingleAssocPrepend
-  if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
-    def preload(preloader)
-      associated_records_by_owner(preloader).each do |owner, associated_records|
-        if reflection.options[:inherit]
-          record = associated_records.find do |record|
-            Array(reflection.options[:inherit]).all? do |obj|
-              record.send(obj) == owner.send(obj)
-            end
-          end
-        else
-          record = associated_records.first
-        end
+module ActiveRecordInheritPreloadAssocPrepend
+  def self.prepended(mod)
+    mod.class_eval do
+      alias_method_chain :associated_records_by_owner, :inherit
+    end
+  end
 
-        association = owner.association(reflection.name)
-        association.target = record
-        association.set_inverse_instance(record) if record
+  def filter_associated_records_with_inherit!(owner, associated_records)
+    return unless reflection.options[:inherit]
+
+    associated_records.select! do |record|
+      Array(reflection.options[:inherit]).all? do |obj|
+        record.send(obj) == owner.send(obj)
+      end
+    end
+  end
+
+  if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
+    def associated_records_by_owner_with_inherit(preloader)
+      associated_records_by_owner_without_inherit(preloader).tap do |result|
+        result.each(&method(:filter_associated_records_with_inherit!)) if reflection.options[:inherit]
       end
     end
   else
-    def preload
-      associated_records_by_owner.each do |owner, associated_records|
-        if reflection.options[:inherit]
-          record = associated_records.find do |record|
-            Array(reflection.options[:inherit]).all? do |obj|
-              record.send(obj) == owner.send(obj)
-            end
-          end
-        else
-          record = associated_records.first
-        end
-
-        association = owner.association(reflection.name)
-        association.target = record
-        association.set_inverse_instance(record) if record
+    def associated_records_by_owner_with_inherit
+      associated_records_by_owner_without_inherit.tap do |result|
+        result.each(&method(:filter_associated_records_with_inherit!)) if reflection.options[:inherit]
       end
     end
   end
 end
 
-ActiveRecord::Associations::Preloader::SingularAssociation.class_eval do
-  prepend ActiveRecordInheritPreloadSingleAssocPrepend
-end
-
-module ActiveRecordInheritPreloadCollectionAssocPrepend
-  if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
-    def preload(preloader)
-      associated_records_by_owner(preloader).each do |owner, records|
-        if reflection.options[:inherit]
-          records.select! do |record|
-            Array(reflection.options[:inherit]).all? do |obj|
-              record.send(obj) == owner.send(obj)
-            end
-          end
-        end
-
-        association = owner.association(reflection.name)
-        association.loaded!
-        association.target.concat(records)
-        records.each { |record| association.set_inverse_instance(record) }
-      end
-    end
-  else
-    def preload
-      associated_records_by_owner.each do |owner, records|
-        if reflection.options[:inherit]
-          records.select! do |record|
-            Array(reflection.options[:inherit]).all? do |obj|
-              record.send(obj) == owner.send(obj)
-            end
-          end
-        end
-
-        association = owner.association(reflection.name)
-        association.loaded!
-        association.target.concat(records)
-        records.each { |record| association.set_inverse_instance(record) }
-      end
-    end
-  end
-end
-
-ActiveRecord::Associations::Preloader::CollectionAssociation.class_eval do
-  prepend ActiveRecordInheritPreloadCollectionAssocPrepend
+ActiveRecord::Associations::Preloader::Association.class_eval do
+  prepend ActiveRecordInheritPreloadAssocPrepend
 end
 
 class ActiveRecord::Base
