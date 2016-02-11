@@ -1,9 +1,5 @@
-source "https://rubygems.org"
+eval_gemfile('gemfiles/common.rb')
 
-gemspec :path=>"../"
-
-gem "activerecord", "~> 3.2.18"
-gem "minitest", "~> 4.7.0"
-gem "test-unit-minitest"
-
-eval(File.read('gemfiles/common.rb'))
+gem 'activerecord', '~> 3.2.22'
+gem 'minitest', '~> 4.7.0'
+gem 'test-unit-minitest'
