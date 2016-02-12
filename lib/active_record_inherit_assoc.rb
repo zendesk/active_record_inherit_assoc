@@ -1,11 +1,21 @@
 require 'active_record'
 
-if ActiveRecord::VERSION::MAJOR < 4
+case ActiveRecord::VERSION::MAJOR
+when 3
   ActiveRecord::Associations::Builder::HasMany.valid_options   << :inherit
   ActiveRecord::Associations::Builder::HasOne.valid_options    << :inherit
   ActiveRecord::Associations::Builder::BelongsTo.valid_options << :inherit
-else
+when 4
   ActiveRecord::Associations::Builder::Association.valid_options << :inherit
+when 5
+  # We can't add options into `valid_options` anymore.
+  # Here are the possible solutions:
+  #   * monkey patch Assocition::VALID_OPTIONS
+  #   * prepend the `valid_options` method
+  #   * create an Extension class and add it via ActiveRecord::Associations::Builder::Association.extensions
+  #
+  # I went with the first one out of simplicity.
+  ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit
 end
 
 module ActiveRecordInheritAssocPrepend
