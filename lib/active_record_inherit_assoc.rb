@@ -18,49 +18,74 @@ when 5
   ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit
 end
 
-module ActiveRecordInheritAssocPrepend
-  def target_scope
-    if inherited_attributes = attribute_inheritance_hash
-      super.where(inherited_attributes)
-    else
-      super
-    end
-  end
+module ActiveRecordInheritAssoc
 
-  private
+  # When building an association with :inherit we inject a scope.
+  # The scope will add the current objects attributes to all queries done with this association.
+  module InheritedScoping
+    def build(model, name, scope = nil, options = {}, &block)
+      if options[:inherit]
+        # TODO: we could support this with yielding to the original scope
+        raise(
+          ArgumentError,
+          "Inherited assocations already use a scope, you cannot pass a scope when building it.\n" \
+          "If you need this feature, do not use :inherit and define a combined scope manually"
+        )
+      elsif scope.is_a?(Hash) && inherit = scope[:inherit]
+        inherit = Array(inherit) # can be symbol or array of symbols
 
-  def attribute_inheritance_hash
-    return nil unless reflection.options[:inherit]
-    Array(reflection.options[:inherit]).inject({}) { |hash, association| hash[association] = owner.send(association) ; hash }
-  end
+        options = scope
+        scope = -> (record) do
+          if record # called on single record
+            query = inherit.each_with_object({}) { |k, all| all[k] = record.send(k) }
+            where(query)
+          else # called at class level, so there is nothing we can do
+            where(nil)
+          end
+        end
+        reflection = super(model, name, scope, options, &block)
 
-  def skip_statement_cache?
-    super || !!reflection.options[:inherit]
-  end
-end
+        # we want to be called with nil, so we override the sanity check rails added
+        # https://github.com/rails/rails/commit/ed56e596a0467390011bc9d56d462539776adac1
+        # without the preloader patch below this would be a terrible idea
+        def reflection.check_preloadable!
+          false
+        end
 
-ActiveRecord::Associations::Association.send(:prepend, ActiveRecordInheritAssocPrepend)
-
-module ActiveRecordInheritPreloadAssocPrepend
-  def associated_records_by_owner(*args)
-    super.tap do |result|
-      next unless inherit = reflection.options[:inherit]
-      result.each do |owner, associated_records|
-        filter_associated_records_with_inherit!(owner, associated_records, inherit)
+        reflection
+      else
+        super
       end
     end
   end
 
-  def filter_associated_records_with_inherit!(owner, associated_records, inherit)
-    associated_records.select! do |record|
-      Array(inherit).all? do |association|
-        record.send(association) == owner.send(association)
+  class << ActiveRecord::Associations::Builder::Association
+    prepend InheritedScoping
+  end
+
+  # When we preloaded an unscoped association we did not filter in the sql,
+  # so we have to filter the records that came back ... expensive
+  module PreloadFilter
+    def associated_records_by_owner(*args)
+      super.tap do |result|
+        next unless inherit = reflection.options[:inherit]
+        result.each do |owner, associated_records|
+          filter_associated_records_with_inherit!(owner, associated_records, inherit)
+        end
+      end
+    end
+
+    def filter_associated_records_with_inherit!(owner, associated_records, inherit)
+      associated_records.select! do |record|
+        Array(inherit).all? do |association|
+          record.send(association) == owner.send(association)
+        end
       end
     end
   end
-end
 
-ActiveRecord::Associations::Preloader::Association.send(:prepend, ActiveRecordInheritPreloadAssocPrepend)
+  ActiveRecord::Associations::Preloader::Association.send(:prepend, PreloadFilter)
+end
 
 class ActiveRecord::Base
   # Makes the model inherit the specified attribute from a named association.

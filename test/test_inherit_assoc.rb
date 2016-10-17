@@ -11,7 +11,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
   end
 
   class Other < ActiveRecord::Base
-    belongs_to :main
+    belongs_to :main, :inherit => :account_id
   end
 
   class Third < ActiveRecord::Base
