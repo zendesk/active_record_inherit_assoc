@@ -33,6 +33,10 @@ module ActiveRecordInheritAssocPrepend
     return nil unless reflection.options[:inherit]
     Array(reflection.options[:inherit]).inject({}) { |hash, association| hash[association] = owner.send(association) ; hash }
   end
+
+  def skip_statement_cache?
+    super || !!reflection.options[:inherit]
+  end
 end
 
 ActiveRecord::Associations::Association.send(:prepend, ActiveRecordInheritAssocPrepend)
