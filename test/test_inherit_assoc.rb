@@ -165,4 +165,16 @@ class TestInheritAssoc < ActiveSupport::TestCase
     other = main.create_third
     assert_equal main.account_id, other.account_id
   end
+
+	def test_association_caching_fail
+    main_1 = Main.create!(account_id: 1)
+    third_1 = Third.create!(main_id: main_1.id, account_id: 1)
+
+    assert_equal third_1, main_1.third
+
+    main_2 = Main.create!(account_id: 2)
+    third_2 = Third.create!(main_id: main_2.id, account_id: 2)
+
+    assert_equal third_2, main_2.third # this will fail, commenting out the previous assertion will make it pass.
+  end
 end
