@@ -64,7 +64,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
 
   def test_has_one_should_set_conditions_on_fetch
     main = Main.create! :account_id => 1
-    third_1 = Third.create! :main_id => main.id, :account_id => 2
+    Third.create! :main_id => main.id, :account_id => 2
     third_2 = Third.create! :main_id => main.id, :account_id => 1
 
     assert_equal third_2, main.third
@@ -73,7 +73,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
   def test_has_one_should_set_conditions_on_includes
     main = Main.create! :account_id => 1
 
-    third_1 = Third.create! :main_id => main.id, :account_id => 2
+    Third.create! :main_id => main.id, :account_id => 2
     third_2 = Third.create! :main_id => main.id, :account_id => 1
 
     mains = Main.where(id: main.id).includes(:third)
@@ -85,9 +85,9 @@ class TestInheritAssoc < ActiveSupport::TestCase
     main_1 = Main.create! :account_id => 1
     main_2 = Main.create! :account_id => 1
 
-    third_1 = Third.create! :main_id => main_1.id, :account_id => 2
+    Third.create! :main_id => main_1.id, :account_id => 2
     third_2 = Third.create! :main_id => main_1.id, :account_id => 1
-    third_3 = Third.create! :main_id => main_2.id, :account_id => 2
+    Third.create! :main_id => main_2.id, :account_id => 2
     third_4 = Third.create! :main_id => main_2.id, :account_id => 1
 
     mains = Main.where(id: [main_1.id, main_2.id]).includes(:third)
@@ -99,7 +99,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
   def test_has_many_should_set_conditions_on_includes
     main = Main.create! :account_id => 1, :blah_id => 10
 
-    fourth_1 = Fourth.create! :main_id => main.id, :account_id => 2, :blah_id => 10
+    Fourth.create! :main_id => main.id, :account_id => 2, :blah_id => 10
     fourth_2 = Fourth.create! :main_id => main.id, :account_id => 1, :blah_id => 10
 
     mains = Main.where(id: main.id).includes(:fourths)
@@ -111,9 +111,9 @@ class TestInheritAssoc < ActiveSupport::TestCase
     main_1 = Main.create! :account_id => 1, :blah_id => 10
     main_2 = Main.create! :account_id => 1, :blah_id => 20
 
-    fourth_1 = Fourth.create! :main_id => main_1.id, :account_id => 2, :blah_id => 10
+    Fourth.create! :main_id => main_1.id, :account_id => 2, :blah_id => 10
     fourth_2 = Fourth.create! :main_id => main_1.id, :account_id => 1, :blah_id => 10
-    fourth_3 = Fourth.create! :main_id => main_2.id, :account_id => 2, :blah_id => 20
+    Fourth.create! :main_id => main_2.id, :account_id => 2, :blah_id => 20
     fourth_4 = Fourth.create! :main_id => main_2.id, :account_id => 1, :blah_id => 20
 
     mains = Main.where(id: [main_1.id, main_2.id]).includes(:fourths)
