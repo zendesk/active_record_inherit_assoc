@@ -34,7 +34,7 @@ module ActiveRecordInheritAssocPrepend
     Array(reflection.options[:inherit]).inject({}) { |hash, association| hash[association] = owner.send(association) ; hash }
   end
 
-  if ActiveRecord::VERSION::MAJOR == 4
+  if ActiveRecord::VERSION::MAJOR >= 4
     def skip_statement_cache?
       super || !!reflection.options[:inherit]
     end
