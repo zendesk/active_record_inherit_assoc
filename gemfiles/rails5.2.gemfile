@@ -1,0 +1,4 @@
+eval_gemfile('common.rb')
+
+gem 'activerecord', '~> 5.2.0.beta2', require: 'active_record'
+gem 'rails',        '~> 5.2.0.beta2'

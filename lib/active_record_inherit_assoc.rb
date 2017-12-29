@@ -35,7 +35,7 @@ module ActiveRecordInheritAssocPrepend
   end
 
   if ActiveRecord::VERSION::MAJOR >= 4
-    def skip_statement_cache?
+    def skip_statement_cache?(*)
       super || !!reflection.options[:inherit]
     end
   end
@@ -44,12 +44,22 @@ end
 ActiveRecord::Associations::Association.send(:prepend, ActiveRecordInheritAssocPrepend)
 
 module ActiveRecordInheritPreloadAssocPrepend
-  def associated_records_by_owner(*args)
-    super.tap do |result|
-      next unless inherit = reflection.options[:inherit]
-      result.each do |owner, associated_records|
-        filter_associated_records_with_inherit!(owner, associated_records, inherit)
+  if ActiveRecord::VERSION::STRING < '5.2.0'
+    def associated_records_by_owner(*)
+      super.tap do |result|
+        next unless inherit = reflection.options[:inherit]
+        result.each do |owner, associated_records|
+          filter_associated_records_with_inherit!(owner, associated_records, inherit)
+        end
       end
+    end
+  else
+    def associate_records_to_owner(owner, records)
+      if inherit = reflection.options[:inherit]
+        records = Array(records)
+        filter_associated_records_with_inherit!(owner, records, inherit)
+      end
+      super
     end
   end
 

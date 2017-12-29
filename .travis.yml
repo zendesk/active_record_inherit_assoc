@@ -5,15 +5,16 @@ sudo: false
 branches:
   only: master
 rvm:
-  - 2.2.7
-  - 2.3.4
-  - 2.4.1
+  - 2.2
+  - 2.3
+  - 2.4
 gemfile:
   - gemfiles/rails3.2.gemfile
   - gemfiles/rails4.2.gemfile
   - gemfiles/rails5.0.gemfile
   - gemfiles/rails5.1.gemfile
+  - gemfiles/rails5.2.gemfile
 matrix:
   exclude:
-    - rvm: 2.4.1
+    - rvm: 2.4
       gemfile: gemfiles/rails3.2.gemfile
