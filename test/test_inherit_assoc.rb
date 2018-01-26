@@ -8,6 +8,8 @@ class TestInheritAssoc < ActiveSupport::TestCase
     if ActiveRecord::VERSION::MAJOR < 4
       has_many :conditional_others, :inherit => :account_id, :conditions => {:val => "foo"}, :class_name => "Other"
     end
+    has_many :fifths, :inherit => :account_id
+    has_many :sixths, :through => :fifths, inherit: :account_id
   end
 
   class Other < ActiveRecord::Base
@@ -19,6 +21,15 @@ class TestInheritAssoc < ActiveSupport::TestCase
   end
 
   class Fourth < ActiveRecord::Base
+    belongs_to :main
+  end
+
+  class Fifth < ActiveRecord::Base
+    belongs_to :main, inherit: :account_id
+    belongs_to :sixth, inherit: :account_id
+  end
+
+  class Sixth < ActiveRecord::Base
     belongs_to :main
   end
 
@@ -94,6 +105,25 @@ class TestInheritAssoc < ActiveSupport::TestCase
 
     assert_equal third_2, mains.first.third
     assert_equal third_4, mains.last.third
+  end
+
+  def test_has_many_through_should_set_conditions_on_join_table
+    main_1 = Main.create! :account_id => 1
+    main_2 = Main.create! :account_id => 1
+
+    sixth_1 = Sixth.create! :main_id => main_1.id, :account_id => 1
+    sixth_2 = Sixth.create! :main_id => main_1.id, :account_id => 1
+    sixth_3 = Sixth.create! :main_id => main_1.id, :account_id => 1
+    sixth_4 = Sixth.create! :main_id => main_1.id, :account_id => 1
+
+    Fifth.create! :main_id => main_1.id, :account_id => 2, :sixth_id => sixth_1.id
+    Fifth.create! :main_id => main_1.id, :account_id => 1, :sixth_id => sixth_2.id
+    Fifth.create! :main_id => main_2.id, :account_id => 2, :sixth_id => sixth_3.id
+    Fifth.create! :main_id => main_2.id, :account_id => 1, :sixth_id => sixth_4.id
+
+    mains = Main.where(id: [main_1.id, main_2.id])
+    assert_equal [sixth_2], mains.first.sixths
+    assert_equal [sixth_4], mains.last.sixths
   end
 
   def test_has_many_should_set_conditions_on_includes

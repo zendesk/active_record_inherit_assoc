@@ -31,7 +31,12 @@ module ActiveRecordInheritAssocPrepend
 
   def attribute_inheritance_hash
     return nil unless reflection.options[:inherit]
-    Array(reflection.options[:inherit]).inject({}) { |hash, association| hash[association] = owner.send(association) ; hash }
+    Array(reflection.options[:inherit]).inject({}) do |hash, association|
+      assoc_value = owner.send(association)
+      hash[association] = assoc_value
+      hash["#{through_reflection.table_name}.#{association}"] = assoc_value if reflection.options.key?(:through)
+      hash
+    end
   end
 
   if ActiveRecord::VERSION::MAJOR >= 4

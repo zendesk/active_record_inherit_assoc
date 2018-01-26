@@ -25,4 +25,17 @@ ActiveRecord::Schema.define(:version => 1) do
     t.integer :account_id
     t.integer :blah_id
   end
+
+  drop_table(:fifths) rescue nil
+  create_table "fifths" do |t|
+    t.integer :main_id
+    t.integer :account_id
+    t.integer :sixth_id
+  end
+
+  drop_table(:sixths) rescue nil
+  create_table "sixths" do |t|
+    t.integer :main_id
+    t.integer :account_id
+  end
 end
