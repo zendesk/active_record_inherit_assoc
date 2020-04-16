@@ -68,10 +68,9 @@ module ActiveRecordInheritPreloadAssocPrepend
     prescope = super
 
     if inherit = reflection.options[:inherit]
-      owner = owners.first
-
       Array(inherit).each do |inherit_assoc|
-        prescope = prescope.where(inherit_assoc => owner.send(inherit_assoc))
+        owner_values = owners.map(&inherit_assoc).compact.uniq
+        prescope = prescope.where(inherit_assoc => owner_values)
       end
     end
 
