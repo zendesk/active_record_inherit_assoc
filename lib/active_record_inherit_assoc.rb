@@ -27,17 +27,17 @@ module ActiveRecordInheritAssocPrepend
 
   def attribute_inheritance_hash
     return nil unless reflection.options[:inherit]
-    Array(reflection.options[:inherit]).inject({}) do |hash, association|
+
+    Array(reflection.options[:inherit]).each_with_object({}) do |association, hash|
       assoc_value = owner.send(association)
       hash[association] = assoc_value
       hash["#{through_reflection.table_name}.#{association}"] = assoc_value if reflection.options.key?(:through)
-      hash
     end
   end
 
   if ActiveRecord::VERSION::MAJOR >= 4
     def skip_statement_cache?(*)
-      super || !!reflection.options[:inherit]
+      super || reflection.options.key?(:inherit)
     end
   end
 end
@@ -62,6 +62,20 @@ module ActiveRecordInheritPreloadAssocPrepend
       end
       super
     end
+  end
+
+  def scope
+    prescope = super
+
+    if inherit = reflection.options[:inherit]
+      owner = owners.first
+
+      Array(inherit).each do |inherit_assoc|
+        prescope = prescope.where(inherit_assoc => owner.send(inherit_assoc))
+      end
+    end
+
+    prescope
   end
 
   def filter_associated_records_with_inherit!(owner, associated_records, inherit)
