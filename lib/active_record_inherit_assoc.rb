@@ -3,6 +3,7 @@ require 'active_record'
 case ActiveRecord::VERSION::MAJOR
 when 4
   ActiveRecord::Associations::Builder::Association.valid_options << :inherit
+  ActiveRecord::Associations::Builder::Association.valid_options << :inherit_if
 when 5
   # We can't add options into `valid_options` anymore.
   # Here are the possible solutions:
@@ -12,6 +13,7 @@ when 5
   #
   # I went with the first one out of simplicity.
   ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit
+  ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit_if
 end
 
 module ActiveRecordInheritAssocPrepend
@@ -30,6 +32,7 @@ module ActiveRecordInheritAssocPrepend
 
     Array(reflection.options[:inherit]).each_with_object({}) do |association, hash|
       assoc_value = owner.send(association)
+      next if reflection.options[:inherit_if] && !reflection.options[:inherit_if].call(owner)
       hash[association] = assoc_value
       hash["#{through_reflection.table_name}.#{association}"] = assoc_value if reflection.options.key?(:through)
     end
