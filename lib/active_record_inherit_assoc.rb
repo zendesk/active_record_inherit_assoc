@@ -72,6 +72,10 @@ module ActiveRecordInheritPreloadAssocPrepend
 
     if inherit = reflection.options[:inherit]
       Array(inherit).each do |inherit_assoc|
+        if reflection.options[:inherit_if]
+          # If one of the owners is not using the inheritance, the inheritance shouldn't be used in this scope
+          next if owners.detect { |o| !reflection.options[:inherit_if].call(o) }
+        end
         owner_values = owners.map(&inherit_assoc).compact.uniq
         prescope = prescope.where(inherit_assoc => owner_values)
       end
@@ -82,6 +86,7 @@ module ActiveRecordInheritPreloadAssocPrepend
 
   def filter_associated_records_with_inherit!(owner, associated_records, inherit)
     associated_records.select! do |record|
+      return true if reflection.options[:inherit_if] && !reflection.options[:inherit_if].call(owner)
       Array(inherit).all? do |association|
         record.send(association) == owner.send(association)
       end
