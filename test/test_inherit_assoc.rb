@@ -13,6 +13,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
     has_many :fifths, :inherit => :account_id
     has_many :sixths, :through => :fifths, inherit: :account_id
     has_many :sevenths, :inherit => :account_id, :inherit_if => Proc.new { |m| m.aux }
+    has_many :eighths, :inherit => :account_id, :inherit_universal_values => [nil]
   end
 
   class Other < ActiveRecord::Base
@@ -41,6 +42,10 @@ class TestInheritAssoc < ActiveSupport::TestCase
 
   class Seventh < ActiveRecord::Base
     belongs_to :main, inherit: :account_id
+  end
+
+  class Eighth < ActiveRecord::Base
+    belongs_to :main, inherit: :account_id, inherit_universal_values: [nil]
   end
 
   describe "Main, with some others, scoped by account_id" do
@@ -246,5 +251,22 @@ class TestInheritAssoc < ActiveSupport::TestCase
     main_3 = Main.create!(account_id: 1, aux: false)
     seventh_3 = Seventh.create! :account_id => 2, :main_id => main_3.id
     assert_equal [seventh_3], main_3.sevenths
+  end
+
+  def test_inherit_allow_nil_in_belongs_to
+    main_with_account = Main.create!(account_id: 1)
+    eighth_1 = Eighth.create! :account_id => 1, :main_id => main_with_account.id
+    assert_equal main_with_account, eighth_1.main
+
+    system_main = Main.create!
+    eighth_2 = Eighth.create! :account_id => 42, :main_id => system_main.id
+    assert_equal system_main, eighth_2.main
+  end
+
+  def test_inherit_allow_nil_in_has_many
+    main = Main.create!(account_id: 1)
+    eighth_1 = Eighth.create! :account_id => 1, :main_id => main.id
+    system_eighth = Eighth.create! :account_id => nil, :main_id => main.id
+    assert_equal main.eighths, [eighth_1, system_eighth]
   end
 end
