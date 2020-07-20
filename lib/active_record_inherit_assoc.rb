@@ -4,7 +4,7 @@ case ActiveRecord::VERSION::MAJOR
 when 4
   ActiveRecord::Associations::Builder::Association.valid_options << :inherit
   ActiveRecord::Associations::Builder::Association.valid_options << :inherit_if
-  ActiveRecord::Associations::Builder::Association.valid_options << :inherit_universal_values
+  ActiveRecord::Associations::Builder::Association.valid_options << :inherit_allowed_list
 when 5
   # We can't add options into `valid_options` anymore.
   # Here are the possible solutions:
@@ -15,7 +15,7 @@ when 5
   # I went with the first one out of simplicity.
   ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit
   ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit_if
-  ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit_universal_values
+  ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit_allowed_list
 end
 
 module ActiveRecordInheritAssocPrepend
@@ -31,11 +31,11 @@ module ActiveRecordInheritAssocPrepend
 
   def attribute_inheritance_hash
     return nil unless reflection.options[:inherit]
-    inherit_universal_values = reflection.options[:inherit_universal_values]
+    inherit_allowed_list = reflection.options[:inherit_allowed_list]
 
     Array(reflection.options[:inherit]).each_with_object({}) do |association, hash|
       assoc_value = owner.send(association)
-      assoc_value = [assoc_value, inherit_universal_values].flatten if inherit_universal_values
+      assoc_value = [assoc_value, inherit_allowed_list].flatten if inherit_allowed_list
       next if reflection.options[:inherit_if] && !reflection.options[:inherit_if].call(owner)
       hash[association] = assoc_value
       hash["#{through_reflection.table_name}.#{association}"] = assoc_value if reflection.options.key?(:through)
@@ -77,7 +77,7 @@ module ActiveRecordInheritPreloadAssocPrepend
     if inherit = reflection.options[:inherit]
       Array(inherit).each do |inherit_assoc|
         owner_values = owners.map(&inherit_assoc).compact.uniq
-        owner_values << reflection.options[:inherit_universal_values] if reflection.options[:inherit_universal_values]
+        owner_values << reflection.options[:inherit_allowed_list] if reflection.options[:inherit_allowed_list]
         owner_values.flatten!
         prescope = prescope.where(inherit_assoc => owner_values)
       end
@@ -90,7 +90,7 @@ module ActiveRecordInheritPreloadAssocPrepend
     associated_records.select! do |record|
       Array(inherit).all? do |association|
         record.send(association) == owner.send(association) ||
-          reflection.options[:inherit_universal_values] && reflection.options[:inherit_universal_values].include?(record.send(association))
+          reflection.options[:inherit_allowed_list] && reflection.options[:inherit_allowed_list].include?(record.send(association))
       end
     end
   end

@@ -13,7 +13,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
     has_many :fifths, :inherit => :account_id
     has_many :sixths, :through => :fifths, inherit: :account_id
     has_many :sevenths, :inherit => :account_id, :inherit_if => Proc.new { |m| m.aux }
-    has_many :eighths, :inherit => :account_id, :inherit_universal_values => [nil]
+    has_many :eighths, :inherit => :account_id, :inherit_allowed_list => [nil]
   end
 
   class Other < ActiveRecord::Base
@@ -45,7 +45,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
   end
 
   class Eighth < ActiveRecord::Base
-    belongs_to :main, inherit: :account_id, inherit_universal_values: [nil]
+    belongs_to :main, inherit: :account_id, inherit_allowed_list: [nil]
   end
 
   describe "Main, with some others, scoped by account_id" do
