@@ -12,8 +12,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
     end
     has_many :fifths, :inherit => :account_id
     has_many :sixths, :through => :fifths, inherit: :account_id
-    has_many :sevenths, :inherit => :account_id, :inherit_if => Proc.new { |m| m.aux }
-    has_many :eighths, :inherit => :account_id, :inherit_allowed_list => [nil]
+    has_many :sevenths, :inherit => :account_id, :inherit_allowed_list => [nil]
   end
 
   class Other < ActiveRecord::Base
@@ -34,17 +33,10 @@ class TestInheritAssoc < ActiveSupport::TestCase
   end
 
   class Sixth < ActiveRecord::Base
-    attr_accessor :aux
-
     belongs_to :main
-    belongs_to :seventh, inherit: :account_id, inherit_if: Proc.new { |sixth| sixth.aux }
   end
 
   class Seventh < ActiveRecord::Base
-    belongs_to :main, inherit: :account_id
-  end
-
-  class Eighth < ActiveRecord::Base
     belongs_to :main, inherit: :account_id, inherit_allowed_list: [nil]
   end
 
@@ -223,50 +215,20 @@ class TestInheritAssoc < ActiveSupport::TestCase
     assert_equal third_2, main_2.third # this will fail, commenting out the previous assertion will make it pass.
   end
 
-  def test_association_with_inherit_if_in_belongs_to
-    main_1 = Main.create!(account_id: 1)
-
-    seventh_1 = Seventh.create! :account_id => 1
-    sixth_1 = Sixth.create! :main_id => main_1.id, :account_id => 1, seventh_id: seventh_1.id, :aux => true
-    assert_equal seventh_1, sixth_1.seventh
-
-    seventh_2 = Seventh.create! :account_id => 1
-    sixth_2 = Sixth.create! :main_id => main_1.id, :account_id => 2, seventh_id: seventh_2.id, :aux => true
-    assert_equal nil, sixth_2.seventh
-
-    seventh_3 = Seventh.create! :account_id => 1
-    sixth_3 = Sixth.create! :main_id => main_1.id, :account_id => 2, seventh_id: seventh_3.id, :aux => false
-    assert_equal seventh_3, sixth_3.seventh
-  end
-
-  def test_association_with_inherit_if_in_has_many
-    main_1 = Main.create!(account_id: 1, aux: true)
-    seventh_1 = Seventh.create! :account_id => 1, :main_id => main_1.id
-    assert_equal [seventh_1], main_1.sevenths
-
-    main_2 = Main.create!(account_id: 1, aux: true)
-    seventh_2 = Seventh.create! :account_id => 2, :main_id => main_2.id
-    assert_equal 0, main_2.sevenths.count
-
-    main_3 = Main.create!(account_id: 1, aux: false)
-    seventh_3 = Seventh.create! :account_id => 2, :main_id => main_3.id
-    assert_equal [seventh_3], main_3.sevenths
-  end
-
   def test_inherit_allow_nil_in_belongs_to
     main_with_account = Main.create!(account_id: 1)
-    eighth_1 = Eighth.create! :account_id => 1, :main_id => main_with_account.id
-    assert_equal main_with_account, eighth_1.main
+    seventh_1 = Seventh.create! :account_id => 1, :main_id => main_with_account.id
+    assert_equal main_with_account, seventh_1.main
 
     system_main = Main.create!
-    eighth_2 = Eighth.create! :account_id => 42, :main_id => system_main.id
-    assert_equal system_main, eighth_2.main
+    seventh_2 = Seventh.create! :account_id => 42, :main_id => system_main.id
+    assert_equal system_main, seventh_2.main
   end
 
   def test_inherit_allow_nil_in_has_many
     main = Main.create!(account_id: 1)
-    eighth_1 = Eighth.create! :account_id => 1, :main_id => main.id
-    system_eighth = Eighth.create! :account_id => nil, :main_id => main.id
-    assert_equal main.eighths, [eighth_1, system_eighth]
+    seventh_1 = Seventh.create! :account_id => 1, :main_id => main.id
+    system_seventh = Seventh.create! :account_id => nil, :main_id => main.id
+    assert_equal main.sevenths, [seventh_1, system_seventh]
   end
 end
