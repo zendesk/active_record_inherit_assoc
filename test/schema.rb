@@ -45,4 +45,10 @@ ActiveRecord::Schema.define(:version => 1) do
     t.integer :main_id
     t.integer :account_id
   end
+
+  drop_table(:eighths) rescue nil
+  create_table "eighths" do |t|
+    t.integer :main_id
+    t.integer :account_id
+  end
 end

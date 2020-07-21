@@ -1,5 +1,6 @@
 # ActiveRecord association inheritance
 
+
  - Makes models inherit specified attributes from an association.
  - Scope queries by inherited attributes
 
@@ -41,6 +42,17 @@ post.categories.to_sql # adds inherited attributes to queries
 This is similar to adding a scope `{ |record| where(account_id: record.account_id) }`,
 but also allows to do `Post.all.includes(:categories)` to work by filtering preloaded records.
 This will not use the attribute to query, so it might use a different index and find more than neccessary records.
+
+#### Allowed list of values (inherit_allowed_list)
+
+In some occasions, there are values that we don't want to filter out, even if they don't correspond to the inherited one. 
+Following the previous Post example, this could happen if we have a universal "system" category that we associated all the posts that have no other category and belongs to no account. A way to keep this category (assuming that it has the account_id `-1`) would look like this:
+
+```Ruby
+class Post < ActiveRecord::Base
+  has_many :categories, inherit: :account_id, inherit_allowed_list: [-1]
+end
+```
 
 ## Copyright and license
 
