@@ -1,6 +1,5 @@
 # ActiveRecord association inheritance
 
-
  - Makes models inherit specified attributes from an association.
  - Scope queries by inherited attributes
 
@@ -46,7 +45,7 @@ This will not use the attribute to query, so it might use a different index and 
 #### Allowed list of values (inherit_allowed_list)
 
 In some occasions, there are values that we don't want to filter out, even if they don't correspond to the inherited one. 
-Following the previous Post example, this could happen if we have a universal "system" category that we associated all the posts that have no other category and belongs to no account. A way to keep this category (assuming that it has the account_id `-1`) would look like this:
+Following the previous Post example, this could happen if we have a universal "system" category belonging to no account, one that we associated to all the posts that have no other category. A way to keep this category (assuming that it has the account_id `-1`) would look like this:
 
 ```Ruby
 class Post < ActiveRecord::Base
