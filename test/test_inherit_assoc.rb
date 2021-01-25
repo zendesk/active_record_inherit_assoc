@@ -1,4 +1,5 @@
 require_relative 'helper'
+require 'pry'
 
 class TestInheritAssoc < ActiveSupport::TestCase
   class Main < ActiveRecord::Base
@@ -34,6 +35,7 @@ class TestInheritAssoc < ActiveSupport::TestCase
 
   class Sixth < ActiveRecord::Base
     belongs_to :main
+    # has_many :fifths
   end
 
   class Seventh < ActiveRecord::Base
@@ -78,6 +80,54 @@ class TestInheritAssoc < ActiveSupport::TestCase
         assert_equal 1, @main.conditional_others.size
       end
     end
+
+    if ActiveRecord::VERSION::MAJOR < 4
+      it "has_many: loads bidirectional stores in cache" do
+        others = @main.others
+
+        others.each do |other|
+          assert other.association_cache[:main].loaded?
+        end
+      end
+
+      it "has_one: loads bidirectional stores in cache" do
+        third = @main.third
+
+        assert third.association_cache[:main].loaded?
+      end
+    else
+      it "has_many: loads bidirectional stores in cache" do
+        others = @main.others
+
+        others.each do |other|
+          assert other.association_cached?(:main)
+        end
+      end
+
+      it "has_one: loads bidirectional stores in cache" do
+        Third.create! :main_id => @main.id, :account_id => 1
+
+        third = @main.third
+
+        assert third.association_cached?(:main)
+      end
+
+      it "has_one: loads bidirectional stores in cache OTHER WAY" do
+        third_id = Third.create!(:main_id => @main.id, :account_id => 1).id
+
+        third = Third.find(third_id)
+
+        main = third.main
+
+        assert main.association_cached?(:third)
+      end
+
+      it "grandchildren" do
+        # main.fifth.sixth
+      end
+    end
+
+    # TODO add a test case to verify that `account.main.others.account`
   end
 
   def test_has_one_should_set_conditions_on_fetch
