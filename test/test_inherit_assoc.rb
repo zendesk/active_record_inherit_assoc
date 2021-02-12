@@ -5,19 +5,21 @@ class TestInheritAssoc < ActiveSupport::TestCase
   class Main < ActiveRecord::Base
     attr_accessor :aux
 
-    has_many :others, :inherit => :account_id
+    has_many :others, :inherit => :account_id #, inverse_of: :main
+    has_many :seconds # , inverse_of: :main
     has_one :third, :inherit => :account_id
     has_many :fourths, :inherit => [:account_id, :blah_id]
-    if ActiveRecord::VERSION::MAJOR < 4
-      has_many :conditional_others, :inherit => :account_id, :conditions => {:val => "foo"}, :class_name => "Other"
-    end
     has_many :fifths, :inherit => :account_id
     has_many :sixths, :through => :fifths, inherit: :account_id
     has_many :sevenths, :inherit => :account_id, :inherit_allowed_list => [nil]
   end
 
   class Other < ActiveRecord::Base
-    belongs_to :main
+    belongs_to :main # , inverse_of: :others
+  end
+
+  class Second < ActiveRecord::Base
+    belongs_to :main # , inverse_of: :second
   end
 
   class Third < ActiveRecord::Base
@@ -35,95 +37,135 @@ class TestInheritAssoc < ActiveSupport::TestCase
 
   class Sixth < ActiveRecord::Base
     belongs_to :main
-    # has_many :fifths
   end
 
   class Seventh < ActiveRecord::Base
     belongs_to :main, inherit: :account_id, inherit_allowed_list: [nil]
   end
 
-  describe "Main, with some others, scoped by account_id" do
+  describe "Main associations" do
     before do
       @main = Main.create! :account_id => 1
-      Other.create! :main_id => @main.id, :account_id => 1
-      Other.create! :main_id => @main.id, :account_id => 2
-      Other.create! :main_id => @main.id, :account_id => 1, :val => "foo"
     end
 
-    it "set conditions on simple access" do
-      assert_equal 2, @main.others.size
-    end
-
-    if ActiveRecord::VERSION::MAJOR < 4
-      it "set conditions on find" do
-        assert_equal 2, @main.others.find(:all).size
+    describe "with some others, scoped by account_id" do
+      before do
+        Other.create! :main_id => @main.id, :account_id => 1
+        Other.create! :main_id => @main.id, :account_id => 2
+        Other.create! :main_id => @main.id, :account_id => 1, :val => "foo"
       end
 
-      it "merge conditions on find" do
-        assert_equal 1, @main.others.all(:conditions => "val = 'foo'").size
+      it "set conditions on simple access" do
+        assert_equal 2, @main.others.size
       end
 
-      it "merge conditions" do
-        assert_equal 1, @main.conditional_others.size
-      end
-    else
-      it "set conditions on find" do
-        assert_equal 2, @main.others.all.size
-      end
-
-      it "merge conditions on find" do
-        assert_equal 1, @main.others.all.where("val = 'foo'").size
-      end
-
-      it "merge conditions" do
-        skip
-        assert_equal 1, @main.conditional_others.size
-      end
-    end
-
-    if ActiveRecord::VERSION::MAJOR < 4
-      it "has_many: loads bidirectional stores in cache" do
-        others = @main.others
-
-        others.each do |other|
-          assert other.association_cache[:main].loaded?
+      if ActiveRecord::VERSION::MAJOR < 5
+        it "set conditions on find" do
+          assert_equal 2, @main.others.all.size
         end
-      end
 
-      it "has_one: loads bidirectional stores in cache" do
-        third = @main.third
-
-        assert third.association_cache[:main].loaded?
-      end
-    else
-      it "has_many: loads bidirectional stores in cache" do
-        others = @main.others
-
-        others.each do |other|
-          assert other.association_cached?(:main)
+        it "merge conditions on find" do
+          assert_equal 1, @main.others.all.where("val = 'foo'").size
         end
+      else
+        # Rails 5 tests
       end
+    end
 
-      it "has_one: loads bidirectional stores in cache" do
-        Third.create! :main_id => @main.id, :account_id => 1
+    describe "caching bidirectional associations" do
+      if ActiveRecord::VERSION::MAJOR < 5
+        it "has_many: loads bidirectional stores in cache" do
+          Other.create! :main_id => @main.id, :account_id => 1
+          Other.create! :main_id => @main.id, :account_id => 1, :val => "foo"
+          others = @main.others
 
-        third = @main.third
+          others.each do |other|
+            assert other.association_cache[:main].loaded?
+          end
+        end
 
-        assert third.association_cached?(:main)
-      end
+        it "has_one: loads bidirectional stores in cache" do
+          Third.create! :main_id => @main.id, :account_id => 1
+          third = @main.third
 
-      it "has_one: loads bidirectional stores in cache OTHER WAY" do
-        third_id = Third.create!(:main_id => @main.id, :account_id => 1).id
+          assert third.association_cache[:main].loaded?
+        end
 
-        third = Third.find(third_id)
+        it "has_many: loads bidirectional stores in cache OTHER WAY" do
+          other = Other.create!(:main_id => @main.id, :account_id => 1)
+          main = other.main
+          others = main.others.reload
 
-        main = third.main
+          assert main.association_cache[:others].loaded?
+        end
 
-        assert main.association_cached?(:third)
-      end
+        it "has_many: loads bidirectional stores in cache OTHER WAY" do
+          second = Second.create!(:main_id => @main.id, :account_id => 1)
+          main = second.main
+          seconds = main.seconds.reload
 
-      it "grandchildren" do
-        # main.fifth.sixth
+          assert main.association_cache[:seconds].loaded?
+        end
+
+        it "has_one: loads bidirectional stores in cache OTHER WAY" do
+          third = Third.create! :main_id => @main.id, :account_id => 1
+          main = third.main
+          # third = main.third # .reload
+
+          assert main.association_cache[:third].loaded?
+        end
+
+        it "grandchildren" do
+          Fifth.create! :main_id => @main.id, :account_id => 1
+          Sixth.create! :main_id => @main.id, :account_id => 1
+          sixths = @main.sixths
+
+          sixths.each do |sixth|
+            assert sixth.association_cache[:main].loaded?
+          end
+        end
+
+        it "grandchildren the OTHER WAY" do
+          Fifth.create! :main_id => @main.id, :account_id => 1
+          Sixth.create! :main_id => @main.id, :account_id => 1
+          sixths = @main.sixths
+
+          main = sixths
+          p main
+          # sixth = main.sixths.first # .reload
+
+          # assert main.association_cache[:sixth].loaded?
+        end
+      else
+        it "has_many: loads bidirectional stores in cache" do
+          others = @main.others
+          p "GOT HERE #{ActiveRecord::VERSION::MAJOR}"
+
+          others.each do |other|
+            assert other.association_cached?[:main]
+          end
+        end
+
+        it "has_one: loads bidirectional stores in cache" do
+          Third.create! :main_id => @main.id, :account_id => 1
+          third = @main.third
+
+          assert third.association_cached?[:main]
+        end
+
+        it "has_one: loads bidirectional stores in cache OTHER WAY" do
+          third_id = Third.create!(:main_id => @main.id, :account_id => 1).id
+
+          third = Third.find(third_id)
+
+          main = third.main
+
+          assert main.association_cache[:third]
+        end
+
+        it "grandchildren" do
+          # main.fifth.sixth
+        end
       end
     end
 

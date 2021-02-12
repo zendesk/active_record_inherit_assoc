@@ -13,6 +13,13 @@ ActiveRecord::Schema.define(:version => 1) do
     t.string  :val
   end
 
+  drop_table(:seconds) rescue nil
+  create_table "seconds" do |t|
+    t.integer :main_id
+    t.integer :account_id
+    t.string  :val
+  end
+
   drop_table(:thirds) rescue nil
   create_table "thirds" do |t|
     t.integer :main_id
