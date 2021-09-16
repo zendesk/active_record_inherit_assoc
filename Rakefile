@@ -1,7 +1,6 @@
 require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rake/testtask'
-require 'wwtd/tasks'
 require 'bump/tasks'
 
 Rake::TestTask.new(:test) do |test|
@@ -10,4 +9,4 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-task :default => "wwtd:local"
+task default: "test"
