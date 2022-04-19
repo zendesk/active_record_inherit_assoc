@@ -3,7 +3,7 @@
  - Makes models inherit specified attributes from an association.
  - Scope queries by inherited attributes
 
-Supports ActiveRecord 3.2, 4.1, 4.2, 5.0
+Supports ActiveRecord 5.0, 5.1, 5.2, 6.0, 6.1
 
 ## Install
 
@@ -44,7 +44,7 @@ This will not use the attribute to query, so it might use a different index and 
 
 #### Allowed list of values (inherit_allowed_list)
 
-In some occasions, there are values that we don't want to filter out, even if they don't correspond to the inherited one. 
+In some occasions, there are values that we don't want to filter out, even if they don't correspond to the inherited one.
 Following the previous Post example, this could happen if we have a universal "system" category belonging to no account, one that we associated to all the posts that have no other category. A way to keep this category (assuming that it has the account_id `-1`) would look like this:
 
 ```Ruby
@@ -55,7 +55,7 @@ end
 
 ## Copyright and license
 
-Copyright 2015 Zendesk
+Copyright 2022 Zendesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

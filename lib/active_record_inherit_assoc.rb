@@ -1,20 +1,14 @@
 require 'active_record'
 
-case ActiveRecord::VERSION::MAJOR
-when 4
-  ActiveRecord::Associations::Builder::Association.valid_options << :inherit
-  ActiveRecord::Associations::Builder::Association.valid_options << :inherit_allowed_list
-when 5
-  # We can't add options into `valid_options` anymore.
-  # Here are the possible solutions:
-  #   * monkey patch Assocition::VALID_OPTIONS
-  #   * prepend the `valid_options` method
-  #   * create an Extension class and add it via ActiveRecord::Associations::Builder::Association.extensions
-  #
-  # I went with the first one out of simplicity.
-  ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit
-  ActiveRecord::Associations::Builder::Association::VALID_OPTIONS << :inherit_allowed_list
+module ActiveRecordInheritBuildAssocPrepend
+  INHERIT_OPTIONS = %i[inherit inherit_allowed_list].freeze
+
+  def valid_options(options)
+    super + INHERIT_OPTIONS
+  end
 end
+
+ActiveRecord::Associations::Builder::Association.singleton_class.prepend(ActiveRecordInheritBuildAssocPrepend)
 
 module ActiveRecordInheritAssocPrepend
   def target_scope
