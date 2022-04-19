@@ -44,7 +44,7 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*others.\..account_id/i, queries.last
+          assert_match(/WHERE.*others.\..account_id/i, queries.last)
         end
       end
 
@@ -53,7 +53,7 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*others.\..account_id/i, queries.last
+          assert_match(/WHERE.*others.\..account_id/i, queries.last)
         end
 
         describe 'loading many records with different values for the inherited association' do
@@ -84,7 +84,7 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*others.\..account_id/i, queries.last
+          assert_match(/WHERE.*others.\..account_id/i, queries.last)
         end
 
         describe 'loading many records with different values for the inherited association' do
@@ -121,7 +121,7 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*thirds.\..account_id/i, queries.last
+          assert_match(/WHERE.*thirds.\..account_id/i, queries.last)
         end
       end
 
@@ -130,7 +130,7 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*thirds.\..account_id/i, queries.last
+          assert_match(/WHERE.*thirds.\..account_id/i, queries.last)
         end
 
         describe 'loading many records with different values for the inherited association' do
@@ -158,7 +158,7 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*thirds.\..account_id/i, queries.last
+          assert_match(/WHERE.*thirds.\..account_id/i, queries.last)
         end
 
         describe 'loading many records with different values for the inherited association' do
@@ -188,8 +188,8 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*fourths.\..account_id/i, queries.last
-          assert_match /WHERE.*fourths.\..blah_id/i, queries.last
+          assert_match(/WHERE.*fourths.\..account_id/i, queries.last)
+          assert_match(/WHERE.*fourths.\..blah_id/i, queries.last)
         end
       end
 
@@ -198,8 +198,8 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*fourths.\..account_id/i, queries.last
-          assert_match /WHERE.*fourths.\..blah_id/i, queries.last
+          assert_match(/WHERE.*fourths.\..account_id/i, queries.last)
+          assert_match(/WHERE.*fourths.\..blah_id/i, queries.last)
         end
 
         describe 'loading many records with different values for the inherited association' do
@@ -230,8 +230,8 @@ class TestInheritAssocQueries < ActiveSupport::TestCase
 
         it 'correctly inherits' do
           assert_equal 2, queries.size
-          assert_match /WHERE.*fourths.\..account_id/i, queries.last
-          assert_match /WHERE.*fourths.\..blah_id/i, queries.last
+          assert_match(/WHERE.*fourths.\..account_id/i, queries.last)
+          assert_match(/WHERE.*fourths.\..blah_id/i, queries.last)
         end
 
         describe 'loading many records with different values for the inherited association' do
