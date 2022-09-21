@@ -33,10 +33,8 @@ module ActiveRecordInheritAssocPrepend
     end
   end
 
-  if ActiveRecord::VERSION::MAJOR >= 4
-    def skip_statement_cache?(*)
-      super || !!reflection.options[:inherit]
-    end
+  def skip_statement_cache?(*)
+    super || !!reflection.options[:inherit]
   end
 end
 

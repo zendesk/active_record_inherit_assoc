@@ -14,7 +14,6 @@ Gem::Specification.new name, "2.12.0" do |s|
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'minitest-rg'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rails'
   s.add_development_dependency 'bump'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'byebug'

@@ -7,9 +7,6 @@ class TestInheritAssoc < ActiveSupport::TestCase
     has_many :others, :inherit => :account_id
     has_one :third, :inherit => :account_id
     has_many :fourths, :inherit => [:account_id, :blah_id]
-    if ActiveRecord::VERSION::MAJOR < 4
-      has_many :conditional_others, :inherit => :account_id, :conditions => {:val => "foo"}, :class_name => "Other"
-    end
     has_many :fifths, :inherit => :account_id
     has_many :sixths, :through => :fifths, inherit: :account_id
     has_many :sevenths, :inherit => :account_id, :inherit_allowed_list => [nil]
@@ -52,31 +49,17 @@ class TestInheritAssoc < ActiveSupport::TestCase
       assert_equal 2, @main.others.size
     end
 
-    if ActiveRecord::VERSION::MAJOR < 4
-      it "set conditions on find" do
-        assert_equal 2, @main.others.find(:all).size
-      end
+    it "set conditions on find" do
+      assert_equal 2, @main.others.all.size
+    end
 
-      it "merge conditions on find" do
-        assert_equal 1, @main.others.all(:conditions => "val = 'foo'").size
-      end
+    it "merge conditions on find" do
+      assert_equal 1, @main.others.all.where("val = 'foo'").size
+    end
 
-      it "merge conditions" do
-        assert_equal 1, @main.conditional_others.size
-      end
-    else
-      it "set conditions on find" do
-        assert_equal 2, @main.others.all.size
-      end
-
-      it "merge conditions on find" do
-        assert_equal 1, @main.others.all.where("val = 'foo'").size
-      end
-
-      it "merge conditions" do
-        skip
-        assert_equal 1, @main.conditional_others.size
-      end
+    it "merge conditions" do
+      skip
+      assert_equal 1, @main.conditional_others.size
     end
   end
 
