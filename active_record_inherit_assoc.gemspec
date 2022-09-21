@@ -9,7 +9,7 @@ Gem::Specification.new name, "2.11.0" do |s|
   s.homepage = "https://github.com/zendesk/#{name}"
 
   s.add_runtime_dependency 'activerecord', '>= 5.0.0', '< 6.2'
-  s.required_ruby_version = '>= 2.7'
+  s.required_ruby_version = '>= 2.6'
 
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'minitest-rg'
