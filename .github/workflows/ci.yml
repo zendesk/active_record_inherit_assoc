@@ -5,15 +5,32 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby:
-          - 2.7
+          - '2.6'
+          - '2.7'
+          - '3.0'
+          - '3.1'
         gemfile:
           - rails5.0
           - rails5.1
           - rails5.2
           - rails6.0
           - rails6.1
+        exclude:
+          - ruby: '3.0'
+            gemfile: rails5.0
+          - ruby: '3.0'
+            gemfile: rails5.1
+          - ruby: '3.0'
+            gemfile: rails5.2
+          - ruby: '3.1'
+            gemfile: rails5.0
+          - ruby: '3.1'
+            gemfile: rails5.1
+          - ruby: '3.1'
+            gemfile: rails5.2
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
