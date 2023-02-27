@@ -45,4 +45,31 @@ ActiveRecord::Schema.define(:version => 1) do
     t.integer :main_id
     t.integer :account_id
   end
+
+  drop_table(:account) rescue nil
+  create_table "accounts" do |t|
+  end
+
+  drop_table(:foos) rescue nil
+  create_table "foos" do |t|
+    t.integer :account_id
+  end
+
+  drop_table(:bars) rescue nil
+  create_table "bars" do |t|
+    t.integer :foo_id
+    t.integer :account_id
+  end
+
+  drop_table(:bazs) rescue nil
+  create_table "bazs" do |t|
+    t.integer :account_id
+  end
+
+  drop_table(:custom_bar_bazs) rescue nil
+  create_table "custom_bar_bazs" do |t|
+    t.integer :bar_id
+    t.integer :baz_id
+    t.integer :account_id
+  end
 end
