@@ -60,7 +60,7 @@ module ActiveRecordInheritPreloadAssocPrepend
     end
   end
 
-  def scope
+  def build_scope
     prescope = super
 
     if inherit = reflection.options[:inherit]
