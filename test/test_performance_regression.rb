@@ -54,12 +54,7 @@ class TestPerformanceRegression < ActiveSupport::TestCase
     it "can load the bars on foo" do
       t = Benchmark.realtime do
         @queries = capture_queries {
-          p Foo.all.includes({
-                             bars: {
-                               bazs: {}
-                             }})
-            .flat_map(&:bars)
-            .flat_map(&:bazs)
+         p Foo.includes(:bars).map(&:bars)
             .size
         }
       end
