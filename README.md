@@ -3,8 +3,6 @@
  - Makes models inherit specified attributes from an association.
  - Scope queries by inherited attributes
 
-Supports ActiveRecord 5.0, 5.1, 5.2, 6.0, 6.1
-
 ## Install
 
 ```
