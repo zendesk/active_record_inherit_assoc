@@ -16,6 +16,7 @@ jobs:
           - rails6.1
           - rails7.0
     env:
+      CI: true
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
       - uses: zendesk/checkout@v3

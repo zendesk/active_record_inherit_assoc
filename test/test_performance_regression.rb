@@ -36,6 +36,7 @@ class TestPerformanceRegression < Minitest::Benchmark
   end
 
   def setup
+    skip unless ENV["CI"]
     super
 
     self.class.bench_range.each do |n|
