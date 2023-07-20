@@ -10,11 +10,4 @@ Gem::Specification.new name, "2.13.1" do |s|
 
   s.add_runtime_dependency 'activerecord', '>= 5.0.0', '< 7.1'
   s.required_ruby_version = '>= 2.6'
-
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'minitest-rg'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'bump'
-  s.add_development_dependency 'sqlite3'
-  s.add_development_dependency 'byebug'
 end
