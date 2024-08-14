@@ -41,23 +41,12 @@ end
 ActiveRecord::Associations::Association.send(:prepend, ActiveRecordInheritAssocPrepend)
 
 module ActiveRecordInheritPreloadAssocPrepend
-  if ActiveRecord::VERSION::STRING < '5.2.0'
-    def associated_records_by_owner(*)
-      super.tap do |result|
-        next unless inherit = reflection.options[:inherit]
-        result.each do |owner, associated_records|
-          filter_associated_records_with_inherit!(owner, associated_records, inherit)
-        end
-      end
+  def associate_records_to_owner(owner, records)
+    if inherit = reflection.options[:inherit]
+      records = Array(records)
+      filter_associated_records_with_inherit!(owner, records, inherit)
     end
-  else
-    def associate_records_to_owner(owner, records)
-      if inherit = reflection.options[:inherit]
-        records = Array(records)
-        filter_associated_records_with_inherit!(owner, records, inherit)
-      end
-      super
-    end
+    super
   end
 
   def build_scope

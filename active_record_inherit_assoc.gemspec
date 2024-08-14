@@ -8,6 +8,6 @@ Gem::Specification.new name, "2.13.2" do |s|
   s.license = "Apache License Version 2.0"
   s.homepage = "https://github.com/zendesk/#{name}"
 
-  s.add_runtime_dependency 'activerecord', '>= 5.0.0', '< 7.2'
-  s.required_ruby_version = '>= 2.6'
+  s.add_runtime_dependency 'activerecord', '>= 6.1', '< 7.2'
+  s.required_ruby_version = '>= 3.1'
 end
