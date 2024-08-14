@@ -1,6 +1,6 @@
 name = "active_record_inherit_assoc"
 
-Gem::Specification.new name, "2.13.2" do |s|
+Gem::Specification.new name, "2.14.0" do |s|
   s.summary = "Attribute inheritance for AR associations"
   s.authors = ["Ben Osheroff"]
   s.email = ["ben@gimbo.net"]
@@ -8,6 +8,6 @@ Gem::Specification.new name, "2.13.2" do |s|
   s.license = "Apache License Version 2.0"
   s.homepage = "https://github.com/zendesk/#{name}"
 
-  s.add_runtime_dependency 'activerecord', '>= 5.0.0', '< 7.2'
-  s.required_ruby_version = '>= 2.6'
+  s.add_runtime_dependency 'activerecord', '>= 6.1'
+  s.required_ruby_version = '>= 3.1'
 end
