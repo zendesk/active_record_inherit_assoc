@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - '3.3'
+          - '3.4'
     env:
       CI: true
       BUNDLE_GEMFILE: gemfiles/rails_main.gemfile
