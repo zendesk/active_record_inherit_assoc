@@ -1,6 +1,7 @@
 require 'bundler/setup'
 require 'minitest/autorun'
 require 'minitest/rg'
+require 'logger'
 
 require 'active_record'
 ActiveRecord::Schema.verbose = false
