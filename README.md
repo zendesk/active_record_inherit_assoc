@@ -12,7 +12,8 @@ gem install active_record_inherit_assoc
 ## Usage
 
 ### Filling inherited attributes on initialization:
-```Ruby
+
+```ruby
 # parent_name - The Symbol name of the parent association.
 # options     - The Hash options to use:
 #               :attr - A Symbol or an Array of Symbol names of the attributes
@@ -26,7 +27,7 @@ end
 
 ### Scoping queries
 
-```Ruby
+```ruby
 class Post < ActiveRecord::Base
   has_many :categories, inherit: :account_id
 end
@@ -45,11 +46,26 @@ This will not use the attribute to query, so it might use a different index and 
 In some occasions, there are values that we don't want to filter out, even if they don't correspond to the inherited one.
 Following the previous Post example, this could happen if we have a universal "system" category belonging to no account, one that we associated to all the posts that have no other category. A way to keep this category (assuming that it has the account_id `-1`) would look like this:
 
-```Ruby
+```ruby
 class Post < ActiveRecord::Base
   has_many :categories, inherit: :account_id, inherit_allowed_list: [-1]
 end
 ```
+
+### Releasing a new version
+A new version is published to RubyGems.org every time a change to `version.rb` is pushed to the `main` branch.
+In short, follow these steps:
+1. Update `version.rb`,
+2. update version in all `Gemfile.lock` files,
+3. merge this change into `main`, and
+4. look at [the action](https://github.com/zendesk/active_record_inherit_assoc/actions/workflows/publish.yml) for output.
+
+To create a pre-release from a non-main branch:
+1. change the version in `version.rb` to something like `1.2.0.pre.1` or `2.0.0.beta.2`,
+2. push this change to your branch,
+3. go to [Actions → “Publish to RubyGems.org” on GitHub](https://github.com/zendesk/active_record_inherit_assoc/actions/workflows/publish.yml),
+4. click the “Run workflow” button,
+5. pick your branch from a dropdown.
 
 ## Copyright and license
 
