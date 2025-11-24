@@ -11,5 +11,5 @@ Gem::Specification.new name, ActiveRecordInheritAssoc::VERSION do |s|
   s.homepage = "https://github.com/zendesk/#{name}"
 
   s.add_runtime_dependency 'activerecord', '>= 6.1'
-  s.required_ruby_version = '>= 3.1'
+  s.required_ruby_version = '>= 3.2'
 end
