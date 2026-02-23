@@ -1,4 +1,4 @@
-name: ci
+name: CI
 on: push
 jobs:
   main:
@@ -11,17 +11,20 @@ jobs:
           - '3.2'
           - '3.3'
           - '3.4'
+          - '4.0'
         gemfile:
-          - rails6.1
           - rails7.0
           - rails7.1
           - rails7.2
+          - rails8.0
+          - rails8.1
+        include:
+          - {ruby: '3.2', rails: rails6.1}
     env:
-      CI: true
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
-      - uses: zendesk/checkout@v3
-      - uses: zendesk/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true

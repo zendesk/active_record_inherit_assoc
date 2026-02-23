@@ -10,19 +10,12 @@ jobs:
   main:
     name: Ruby${{ matrix.ruby }} rails_main
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        ruby:
-          - '3.4'
     env:
-      CI: true
       BUNDLE_GEMFILE: gemfiles/rails_main.gemfile
-
     steps:
-      - uses: zendesk/checkout@v3
-      - uses: zendesk/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: '3.4'
           bundler-cache: true
       - run: bundle exec rake test
