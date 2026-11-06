@@ -52,7 +52,9 @@ class TestPerformanceRegression < Minitest::Benchmark
 
   def bench_performance
     assert_performance_linear 0.98 do |n|
-      Foo.where(group_id: n).includes(:bars).map(&:bars).size
+      5.times do
+        Foo.where(group_id: n).includes(:bars).map(&:bars).size
+      end
     end
   end
 
